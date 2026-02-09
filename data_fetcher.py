@@ -25,8 +25,19 @@ def get_stock_list():
         # 获取东方财富A股列表
         stock_df = ak.stock_zh_a_spot()
         # 过滤掉北交所、ST股票等（可选）
+        # # 1. 过滤ST股（名称包含ST）
+        # stock_df = stock_df[~stock_df['名称'].str.contains('ST', na=False)]
+        #
+        # # 2. 过滤北交所（代码以8或4开头）
+        # stock_df = stock_df[~stock_df['代码'].str.startswith(('8', '4'))]
+        #
+        # # 3. 过滤B股（代码以2或9开头）
+        # stock_df = stock_df[~stock_df['代码'].str.startswith(('2', '9'))]
+        stock_df = stock_df[stock_df['代码'].str.contains('sh', na=False)]
+        stock_df = stock_df[stock_df['代码'].str.contains('sz', na=False)]
         stock_list = stock_df['代码'].tolist()
-        print(f"获取到 {len(stock_list)} 只股票")
+        print(f"过滤后剩余: {len(stock_list)} 只")
+
         return stock_list
     except Exception as e:
         print(f"获取股票列表失败: {e}")
